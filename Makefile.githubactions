@@ -1,0 +1,14 @@
+CC = cl
+LK = link
+CFLAGS = /c /O2 /I "C:\hostedtoolcache\windows\Python\3.8.5\x64\include"
+LDFLAGS= /dll /libpath:"C:\hostedtoolcache\windows\Python\3.8.5\x64\libs"
+
+spider.dll : spider.obj main.obj
+	$(LK) $(LDFLAGS) /out:spider.dll /implib:spider.lib *.obj
+spider.obj : spider.c spider.h
+	$(CC) $(CFLAGS) spider.c
+main.obj : main.cpp
+	$(CC) $(CFLAGS) main.cpp
+
+clean:
+	@del *.obj
