@@ -24,9 +24,13 @@ cdef public void spider(char* ip,Signal* signal):
                         signal.status = 2
                 else:
                         soup = BeautifulSoup(str(content[2]),'html.parser')
-                        Noise = int(str(soup.table.contents[5].contents[5].string))
-                        SNR   = int(str(soup.table.contents[5].contents[7].string))
-                        RSSI  = int(str(soup.table.contents[5].contents[9].string))
+                        if soup.table.contents[5].__len__() == 11:
+                                base = 3
+                        else:
+                                base = 5
+                        Noise = int(str(soup.table.contents[5].contents[base+0].string))
+                        SNR   = int(str(soup.table.contents[5].contents[base+2].string))
+                        RSSI  = int(str(soup.table.contents[5].contents[base+4].string))
                         signal.status= 0
                         signal.Noise = Noise
                         signal.SNR   = SNR
