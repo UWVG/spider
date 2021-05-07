@@ -25,6 +25,7 @@ jobs:
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
       - run: |
           pip install cython
+          pip install beautifulsoup4
           python setup.py build_ext --inplace
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
       - name: nmake

@@ -4,7 +4,13 @@
 extern  "C"
 {
 #endif
-	extern int _spider(void);
+	struct Signal {
+		int status;
+		int Noise;
+		int SNR;
+		int RSSI;
+	};
+	extern int _spider(char *,struct Signal *);
 #ifdef __cplusplus
 }
 #endif

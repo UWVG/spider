@@ -1,16 +1,35 @@
 from urllib import request
-from urllib import error
 from urllib import parse
-
-TEXT_TO_SAY = 'Hello from Python!'
-
-cdef public int spider() except -1:
-    Request_URL = 'http://www.baidu.com'
-    Form_Data = {}
-    Form_Data['DdtcType'] = '1'
-    data = parse.urlencode(Form_Data).encode('utf-8')
-    response = request.urlopen(Request_URL, data, 0.1)
-    html = response.read().decode('utf-8')
-    print(html)
-    a = 78
-    return a
+from urllib import error
+from bs4 import BeautifulSoup
+cdef public struct Signal:
+        int status
+        int Noise
+        int SNR
+        int RSSI
+cdef public void spider(char* ip,Signal* signal):
+        Request_URL = "http://"+str(ip,encoding="utf-8")+"/cgi-bin/webif/system-info.sh"
+        Header = {}
+        Header['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.94 Safari/537.36'
+        Header['Authorization']='Basic YWRtaW46YWRtaW4='
+        try:
+                req = request.Request(Request_URL,headers=Header)
+                response = request.urlopen(req)
+                html = response.read().decode('utf-8')
+                soup = BeautifulSoup(html,'html.parser')
+                content = soup.find_all("div",class_ = 'settings')
+                soup = BeautifulSoup(str(content[1]),'html.parser')
+                content = soup.find_all("table",attrs={'summary':'Settings'})
+                if content.__len__() < 3 :
+                        signal.status = 2
+                else:
+                        soup = BeautifulSoup(str(content[2]),'html.parser')
+                        Noise = int(str(soup.table.contents[5].contents[5].string))
+                        SNR   = int(str(soup.table.contents[5].contents[7].string))
+                        RSSI  = int(str(soup.table.contents[5].contents[9].string))
+                        signal.status= 0
+                        signal.Noise = Noise
+                        signal.SNR   = SNR
+                        signal.RSSI  = RSSI
+        except error.HTTPError as e:
+                signal.status = 1

@@ -4,9 +4,9 @@
 #include "spider.h"
 extern "C"
 {
-	__declspec(dllexport) int __stdcall _spider(void)
+	__declspec(dllexport) void __stdcall _spider(char *ip,struct Signal *signal)
 	{
-		return spider();
+		return spider(ip,signal);
 	}
 }
 
@@ -17,7 +17,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 	{
 	case DLL_PROCESS_ATTACH:
 		program = Py_DecodeLocale("spider", NULL);
-		//dll³õÊ¼»¯µÄÊ±ºòµ÷ÓÃ£¬ÕâÊÇpython3µÄÐ´·¨£¬python2¸Ä³É£¬initrun()¡£²Î¼ûÉú³ÉµÄrun.h
+		//dllï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½python3ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½python2ï¿½Ä³É£ï¿½initrun()ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½Éµï¿½run.h
 		PyImport_AppendInittab("spider", PyInit_spider);
 		Py_SetProgramName(program);
 		Py_Initialize();
